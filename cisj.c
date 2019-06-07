@@ -1,5 +1,8 @@
 #include "cisj.h"
 
+#define POW_2(num) (1<<(num))
+#define VALID_J(j, s) ((POW_2(s-1)) >= j)
+
 static node_set*
 set_new(ssize_t size)
 {

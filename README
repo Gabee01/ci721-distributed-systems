@@ -1,0 +1,6 @@
+Implemente o algoritmo de best-effort broadcast sobre o VCube no ambiente de simulação SMPL. 
+No algoritmo qualquer nodo pode ser a origem do broadcast. 
+
+A origem envia (no máximo) logN mensagens, uma para o primeiro nodo sem falha de cada cluster. Nas mensagens o transmissor informa ao receptor qual o índice do seu cluster ("s"). Os nodos que recebem a mensagem estando no cluster de índice s=1 são folhas e não tem que retransmitir. Por outro lado, um nodo em um cluster de índice s>1 transmite s-1 mensagens, para o primeiro nodo sem falha de seus clusters 1, 2,..., s-1.
+
+Mostre as mensagens transmitidas para diversos nodos funcionando como origens. Em cada execução nodos distintos do sistema estarão falhos/sem-falhas. 
