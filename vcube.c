@@ -125,31 +125,29 @@ void scheduleEvents(int n){
 
 void testNode(int token, t_node *nodes, int n) {
 	int cluster = 1;
-	node_set *cjs = NULL;
-	int is_token_first_ok = -1;
-	
-	for (int cluster = 1; cluster <= log2(n) && is_token_first_ok == -1; cluster++) {
-		cjs = cis(token, cluster);
-		print_cis(cjs, token, cluster);
 
-		for (int i=0; i <= cjs->size && is_token_first_ok == -1; i++){
-			if (cjs->nodes[i] == token){
-				is_token_first_ok = 1;
-			}
-			else{
-				int node_test = status(nodes[cjs->nodes[i]].id);
-				if (node_test == 0){
-					is_token_first_ok = 0;
-				}
+	for (int cluster = 1; cluster <= log2(n); cluster++) {
+		node_set *cjs = cis(token, cluster);
+		printf("cjs size %d", cjs->size);
+		print_cis(cjs, token, cluster);
+		int first_ok = -1;
+		int node_test = -1;
+		for (int i=0; i <= cjs->size && first_ok == -1; i++) {
+			node_test = status(nodes[cjs->nodes[i]].id);
+			if (node_test == 0) {
+				first_ok = cjs->nodes[i];
 			}
 		}
+
+		nodes[first_ok].state[token] = node_test;
+		logTest(nodes, n, cjs, first_ok, token, node_test);
 	}
 
-	if (is_token_first_ok == 1){
-		node_set *c_is = cis(token, cluster);
-		for (int i=0; i <= c_is->size; i++){
-			print_cis(c_is, i, cluster);
-		}
+	// if (is_token_first_ok == 1){
+	// 	node_set *c_is = cis(token, cluster);
+	// 	for (int i=0; i <= c_is->size; i++){
+	// 		print_cis(c_is, i, cluster);
+	// 	}
 	}
 
 	// if (cjs != NULL){
@@ -196,22 +194,21 @@ void testNode(int token, t_node *nodes, int n) {
 		// 	logTest(nodes, n, i, testResult);
 		// }
 	// }
-}
+// }
 
 void logTest(t_node *nodes, int n, node_set *js, int tester_node, int tested_node, int testResult){
 	printf("tester_node: %d/tested_node: %d -> result = %d\n", tester_node, tested_node, testResult);
-	// print_cis(js);
 
 	print_node_state(nodes, n, tester_node);
-	print_node_state(nodes, n, tested_node);
-	puts("----\n");
+	// print_node_state(nodes, n, tested_node);
+	// puts("----\n");
 }
 
 void print_cis(node_set *nodes, int node, int cluster){
-	printf("tester_node cjs (%d, %d): {", node, cluster);
+	printf("cis (%d, %d): {", node, cluster);
 	for (int i=0; i < nodes->size; i++)
-		printf(" %i", nodes->nodes[i]);
-	puts("}");
+		printf(" %d", nodes->nodes[i]);
+	puts("}\n");
 	// printf("%d", is->nodes[0]);
 	// for (int i = 1; i < is->size; i++) {
 	// 	printf(",%d", is->nodes[i]);
@@ -220,12 +217,12 @@ void print_cis(node_set *nodes, int node, int cluster){
 }
 
 void print_node_state(t_node *nodes, int n, int node){
-	printf("tester_node status: \n(node, status): {");
+	printf("node %d status: \n(node, status): {", node);
 	for (int i=0; i < n; i++){
 		printf("(%d, %d)", i, nodes[node].state[i]);
 	}
 	printf("}\n");
-	puts("----\n");
+	// puts("----\n");
 }
 
 void updateStatuses(t_node *nodes, int n, int tester_index, int testee_index){
