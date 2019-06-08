@@ -78,15 +78,12 @@ int main(int argc, char * argv[]){
 		cause(&event, &token);
 		printf("> TEMPO: %f, node: %d, event: %d\n", time(), token, event);
         switch(event) {
-            case TEST:
-            	if (status(nodes[token].id) == 0){
-            		// printf("status node %d = %d", token, status(token));
-            		testNode(token, nodes, n);
+            case TEST: 	
+            	if(status(nodes[token].id) == 0){
+            		testNode(token, nodes, n); 	
+            		schedule(TEST, roundTime, token);
             	}
-            	else{
-            		puts("Node is faulty");
-            	}
-            	schedule(TEST, roundTime, token);
+            	// printf("status node %d = %d", token, status(token));
                 break;
 
             case FAULT:
@@ -100,6 +97,7 @@ int main(int argc, char * argv[]){
 
             case REPAIR:
                 release(nodes[token].id, token);
+                schedule(TEST, roundTime, token);
                 printf("EVENTO: Nodo %d recuperou\n", token);
                 break;
         }
@@ -131,20 +129,23 @@ void scheduleEvents(int n){
 // find cjs | node is the first faulty free node in cjs
 
 void testNode(int token, t_node *nodes, int n) {
-	int cluster = 1;
 	for (int cluster = 1; cluster <= log2(n); cluster++) {
 		// puts("Finding first ok");
 		node_set *cjs = cis(token, cluster);
 
-		// print_cis(cjs, token, cluster);
+		print_cis(cjs, token, cluster);
 		int first_ok = -1;
 		int node_test = -1;
 		for (int i=0; i < cjs->size && first_ok == -1; i++) {
 			node_test = status(nodes[cjs->nodes[i]].id);
-			logTest(nodes, n, cjs, cjs->nodes[i], token, node_test);
-			nodes[cjs->nodes[i]].state[token] = node_test;
 			if (node_test == 0) {
+				nodes[cjs->nodes[i]].state[token] = node_test;
+				logTest(nodes, n, cjs, cjs->nodes[i], token, node_test);
 				first_ok = cjs->nodes[i];
+				printf("first_ok %d, \n", first_ok);
+			}else{
+				nodes[token].state[cjs->nodes[i]] = node_test;
+				printf("node %d FAULTY (status = %d)\n", cjs->nodes[i], node_test);
 			}
 		}
 
@@ -156,25 +157,24 @@ void testNode(int token, t_node *nodes, int n) {
 		// puts("Testing cluster");
 		
 		node_set *c_is = cis(first_ok, cluster);
-		// print_cis(c_is, first_ok, cluster);
+		print_cis(c_is, first_ok, cluster);
 
 		int neighbor;
 		int first_ok_status;
 		for (int s = 0; s < c_is->size; s++){
 			neighbor = c_is->nodes[s];
 			// printf( "neighbor %d", neighbor);
-			first_ok_status = status(nodes[first_ok].id);
-
+			first_ok_status = status(nodes[neighbor].id);
 			nodes[neighbor].state[first_ok] = first_ok_status;
 			logTest(nodes, n, c_is, neighbor, first_ok, first_ok_status);
 			if (first_ok_status == 0){
-				// if (nodes[neighbor].timestamp[first_ok] % 2 == 1)
-				nodes[neighbor].timestamp[first_ok]++;
-				get_info(nodes, n, first_ok, neighbor, s);
+				if (nodes[neighbor].timestamp[first_ok] % 2 == 1)
+					nodes[neighbor].timestamp[first_ok]++;
+				get_info(nodes, n, neighbor, first_ok, s);
 			}
 			else{
-			 	// if (nodes[neighbor].timestamp[first_ok] % 2 == 0)
-				nodes[neighbor].timestamp[first_ok]++;
+			 	if (nodes[first_ok].timestamp[neighbor] % 2 == 0)
+					nodes[first_ok].timestamp[neighbor]++;
 			}
 		}
 	}
