@@ -12,7 +12,7 @@ typedef struct{
 	int count;
 	int id;
 	int *state;
-	int *stateCount;
+	int *timestamp;
 	int facility;
 } t_node;
 
@@ -28,13 +28,11 @@ const int SIMULATION_TIME = 40;
 
 void scheduleEvents(int n);
 void testNode(int token, t_node *nodes, int n);
+void get_info(t_node *nodes, int n, int first_ok, int neighbor, int cluster);
 void print_cis(node_set *nodes, int node, int cluster);
 void logTest(t_node *nodes, int n, node_set *js, int tester_node, int tested_node, int testResult);
 void print_node_state(t_node *nodes, int n, int node);
-// void logTest(int token, t_node *nodes, int n);
-void updateStatuses(t_node* nodes, int n, int tester_index, int testee_index);
-// void printStates(t_node *nodes, int size);
-// void printNodeStates(t_node *nodes, int token);
+void print_node_ts(t_node *nodes, int n, int node);
 
 int main(int argc, char * argv[]){
 	static int n, //Numero de nodes
@@ -61,18 +59,18 @@ int main(int argc, char * argv[]){
 		nodes[i].id = facility(fa_name, 1);
 		
 		nodes[i].state = (int *) malloc(sizeof(int) * n);
-		nodes[i].stateCount = (int *) malloc(sizeof(int) * n);
+		nodes[i].timestamp = (int *) malloc(sizeof(int) * n);
 		
 		for (int j = 0; j < n; j++){
 			nodes[i].state[j] = -1;
-			nodes[i].stateCount[j] = 0;
+			nodes[i].timestamp[j] = 0;
 		}
 	}
 
 	//imprima fa_name e id para todos os nodes
 	//Schedule de eventos
 
-	float roundTime = 10.0;
+	float roundTime = 5.0;
 
 	scheduleEvents(n);
 
@@ -81,8 +79,13 @@ int main(int argc, char * argv[]){
 		printf("> TEMPO: %f, node: %d, event: %d\n", time(), token, event);
         switch(event) {
             case TEST:
-            	// printf("status node %d = %d", token, status(token));
-            	testNode(token, nodes, n);
+            	if (status(nodes[token].id) == 0){
+            		// printf("status node %d = %d", token, status(token));
+            		testNode(token, nodes, n);
+            	}
+            	else{
+            		puts("Node is faulty");
+            	}
             	schedule(TEST, roundTime, token);
                 break;
 
@@ -92,7 +95,7 @@ int main(int argc, char * argv[]){
                     exit(1);
                 }
                 //Deu certo a falha
-                printf("EVENTO: Falha bem sucessedida para nodo %d\n", token);
+                printf("EVENTO: Falha bem sucessedida para nodo %d - status %d\n", token, status(nodes[token].id));
                 break;
 
             case REPAIR:
@@ -109,6 +112,11 @@ void scheduleEvents(int n){
 	for (int i=0; i < n; i++){
 		schedule(TEST, 0.5, i);
 	}
+	for (int i=0; i < n/2; i++){
+		schedule(FAULT, 6.0, i);
+	}
+
+	schedule(REPAIR, 22.0, 0);
 
 	// for (int i = 0; i < n; i++){
 	// schedule(FAULT, 0.0, i);
@@ -117,7 +125,6 @@ void scheduleEvents(int n){
 	// schedule(REPAIR, 29.0, 1);
 	// schedule(REPAIR, 40.0, 1);
 	// }
-	schedule(FAULT, 5.0, 1);
 	// schedule(REPAIR, 29.0, 1);
 }
 
@@ -125,99 +132,84 @@ void scheduleEvents(int n){
 
 void testNode(int token, t_node *nodes, int n) {
 	int cluster = 1;
-
 	for (int cluster = 1; cluster <= log2(n); cluster++) {
+		// puts("Finding first ok");
 		node_set *cjs = cis(token, cluster);
-		printf("cjs size %d", cjs->size);
-		print_cis(cjs, token, cluster);
+
+		// print_cis(cjs, token, cluster);
 		int first_ok = -1;
 		int node_test = -1;
-		for (int i=0; i <= cjs->size && first_ok == -1; i++) {
+		for (int i=0; i < cjs->size && first_ok == -1; i++) {
 			node_test = status(nodes[cjs->nodes[i]].id);
+			logTest(nodes, n, cjs, cjs->nodes[i], token, node_test);
+			nodes[cjs->nodes[i]].state[token] = node_test;
 			if (node_test == 0) {
 				first_ok = cjs->nodes[i];
 			}
 		}
 
-		nodes[first_ok].state[token] = node_test;
-		logTest(nodes, n, cjs, first_ok, token, node_test);
+		if (first_ok == -1)
+			continue;
+
+		// logTest(nodes, n, cjs, first_ok, token, node_test);
+
+		// puts("Testing cluster");
+		
+		node_set *c_is = cis(first_ok, cluster);
+		// print_cis(c_is, first_ok, cluster);
+
+		int neighbor;
+		int first_ok_status;
+		for (int s = 0; s < c_is->size; s++){
+			neighbor = c_is->nodes[s];
+			// printf( "neighbor %d", neighbor);
+			first_ok_status = status(nodes[first_ok].id);
+
+			nodes[neighbor].state[first_ok] = first_ok_status;
+			logTest(nodes, n, c_is, neighbor, first_ok, first_ok_status);
+			if (first_ok_status == 0){
+				// if (nodes[neighbor].timestamp[first_ok] % 2 == 1)
+				nodes[neighbor].timestamp[first_ok]++;
+				get_info(nodes, n, first_ok, neighbor, s);
+			}
+			else{
+			 	// if (nodes[neighbor].timestamp[first_ok] % 2 == 0)
+				nodes[neighbor].timestamp[first_ok]++;
+			}
+		}
 	}
+	print_node_state(nodes, n, token);
 
-	// if (is_token_first_ok == 1){
-	// 	node_set *c_is = cis(token, cluster);
-	// 	for (int i=0; i <= c_is->size; i++){
-	// 		print_cis(c_is, i, cluster);
-	// 	}
+	puts("----");
+}
+
+void get_info(t_node *nodes, int n, int informer, int informed, int cluster){
+	for (int i = 0; i < n; i++){
+		if (nodes[informer].timestamp[i] > nodes[informed].timestamp[i]){
+			if (nodes[informed].state[i] != nodes[informer].state[i]){
+				nodes[informer].timestamp[i] = nodes[informed].timestamp[i];
+				nodes[informed].state[i] = nodes[informer].state[i];
+				printf("node %d gets info about %i from %d\n", informed, i, informer);
+			}
+		}
 	}
-
-	// if (cjs != NULL){
-
-	// }
-
-	// store j
-	// for every 
-	// for (int cluster = 1; cluster < log2(n); cluster++) {
-	// 	node_set *js = cis(token, cluster);
-	// 	int i = -1;
-
-	// 	for (int j = 0; j < js->size && i == -1; j++) {
-	// 		int k = js->nodes[j];
-			
-	// 		int testResult = status(nodes[k].id);
-	// 		if (testResult == 0) { //Faulty free
-	// 			i = k;
-
-	// 		}
-
-	// 		logTest(nodes, n, js, token, k, testResult);
-	// 	}
-
-		// node_set *is = cis(i, cluster);
-
-		// for (int k = 0; k <= is->size; k++) {
-		// 	int j = is->nodes[k];
-
-		// 	int testResult = status(nodes[j].id);
-		// 	nodes[i].state[j] = testResult;
-		// 	if (testResult == 0) //Faulty free
-		// 		if ((nodes[i].stateCount[j] % 2) == 1) {
-		// 			nodes[i].stateCount[j] ++;
-		// 			updateStatuses(nodes, i, j, n);
-		// 			// printNodeStates(nodes, i);
-		// 		}
-		// 	else { //Faulty
-		// 		if ((nodes[i].stateCount[j] % 2) == 0) {
-		// 			nodes[i].stateCount[j] ++;
-		// 		}
-		// 	}
-		// 	// int token, t_node *nodes, int n, node_set js, int tester_node, int testResult
-		// 	logTest(nodes, n, i, testResult);
-		// }
-	// }
-// }
+}
 
 void logTest(t_node *nodes, int n, node_set *js, int tester_node, int tested_node, int testResult){
-	printf("tester_node: %d/tested_node: %d -> result = %d\n", tester_node, tested_node, testResult);
+	printf("%d tested %d -> result = %d, ", tester_node, tested_node, testResult);
 
 	print_node_state(nodes, n, tester_node);
-	// print_node_state(nodes, n, tested_node);
-	// puts("----\n");
 }
 
 void print_cis(node_set *nodes, int node, int cluster){
 	printf("cis (%d, %d): {", node, cluster);
 	for (int i=0; i < nodes->size; i++)
 		printf(" %d", nodes->nodes[i]);
-	puts("}\n");
-	// printf("%d", is->nodes[0]);
-	// for (int i = 1; i < is->size; i++) {
-	// 	printf(",%d", is->nodes[i]);
-	// }
-	// printf("}\n");
+	puts("}");
 }
 
 void print_node_state(t_node *nodes, int n, int node){
-	printf("node %d status: \n(node, status): {", node);
+	printf("node %d status: (node, status): {", node);
 	for (int i=0; i < n; i++){
 		printf("(%d, %d)", i, nodes[node].state[i]);
 	}
@@ -225,47 +217,11 @@ void print_node_state(t_node *nodes, int n, int node){
 	// puts("----\n");
 }
 
-void updateStatuses(t_node *nodes, int n, int tester_index, int testee_index){
-	for (int i = 0; i < n; i++){
-		nodes[tester_index].state[i] = nodes[testee_index].state[i];
-		// nodes[tester_index].stateCount[i] = nodes[testee_index].stateCount[i];
-		printf("UPDATE: nodo %d pegou info sobre nodo %d pelo nodo %d\n", tester_index, i, testee_index);
-    }
+void print_node_ts(t_node *nodes, int n, int node){
+	printf("node %d timestamp: (node, ts): {", node);
+	for (int i=0; i < n; i++){
+		printf("(%d, %d)", i, nodes[node].timestamp [i]);
+	}
+	printf("}\n");
+	// puts("----\n");
 }
-
-// void printStates(t_node *nodes, int size){
-// 	for (int token = 0; token < size; token ++){
-// 		printf("ESTADO ATUAL (nodo %d):\n",  time(), token);
-// 		printf("[");
-// 		for (int i = 0; i < size; i++){
-// 			// if (i != token){
-// 				printf("\tNodo %d: %d\n", i, nodes[token].state[i]);
-// 			// }
-// 		}
-// 		printf("]\n");
-// 	}
-// }
-
-// void printNodeStates(t_node *nodes, int token){
-// 	printf("State node %d:\n",  time(), token);
-// 	printf("[");
-// 	for (int i = 0; i < nodes[i].count; i++){
-// 		if (nodes[token].state[i] == 0){
-// 			printf("%d -> OK, ", i);
-// 		}
-// 		if (nodes[token].state[i] == 1){
-// 			printf("%d -> FAULTY, ", i);
-// 		}
-// 		else{
-// 			printf("%d -> ?, ", i);
-// 		}
-// 	}
-// 	printf("]\n");
-
-	// printf("CONTAGEM DE EVENTOS (nodo %d)\n",  time(), token);
-	// printf("[");
-	// for (int i = 0; i < size; i++){
-	// 	printf("\tNodo %d: %d\n", i, nodes[token].stateCount[i]);
-	// }
-	// printf("]\n");
-// }
