@@ -1,20 +1,20 @@
-all: vcube
+CC=gcc
+CFLAGS=-I.
+FD_DEPS = vcube.h failure_detector.h cisj.h smpl.h rand.h logger.h
+FD_OBJ = vcube.o failure_detector.o cisj.o smpl.o rand.o logger.o
+BEB_DEPS = best_effort.h failure_detector.h smpl.h cisj.h logger.h
+BEB_OBJ = best_effort.o failure_detector.o vcube.o cisj.o smpl.o rand.o logger.o
 
-vcube: vcube.o cisj.o smpl.o rand.o
-	$(LINK.c) -o $@ -Bstatic vcube.o smpl.o cisj.o rand.o -lm -v
+%.o: %.c $(FD_DEPS) $(BEB_DEPS)
+	$(CC) -c -o $@ $< $(CFLAGS)
 
-smpl.o: smpl.c smpl.h
-	$(COMPILE.c) -g smpl.c
+vcube: $(FD_OBJ)
+	$(CC) -o $@ $^ $(CFLAGS)
 
-cisj.o: cisj.c cisj.h
-	$(COMPILE.c) -g cisj.c
+best_effort: $(BEB_OBJ)
+	$(CC) -o $@ $^ $(CFLAGS)
 
-vcube.o: vcube.c smpl.h cisj.h
-	$(COMPILE.c) -g  vcube.c
-
-rand.o: rand.c
-	$(COMPILE.c) -g rand.c
+.PHONY: clean
 
 clean:
-	$(RM) *.o vcube relat saida
-
+	$(RM) *.o vcube best_effort relat logs/*
