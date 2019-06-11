@@ -84,7 +84,10 @@ void scheduleEvents(int n){
 	}
 	for (int i=0; i < n/2; i++){
 		schedule(FAULT, 12.0, i);
-        schedule(REPAIR, 30.0, 0);
+	}
+
+	for (int i=0; i < n/4; i++){
+		schedule(REPAIR, 30.0, 0);
 	}
 
 	// for (int i = 0; i < n; i++){
