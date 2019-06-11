@@ -407,9 +407,21 @@ void trace(int n)
 /*--------------------  GENERATE TRACE MESSAGE  ----------------------*/
 static void msg(int n, int i, char *s, int q1, int q2)
     {
-      static char *m[14] = {"","SCHEDULE","CAUSE","CANCEL",
-        "   RESCHEDULE","   RESUME","   SUSPEND","REQUEST","PREEMPT",
-        "RELEASE","   QUEUE","   DEQUEUE","   RESERVE","FACILITY"};
+      static char *m[14] = {"", // 0
+                            "SCHEDULE",// 1
+                            "CAUSE",// 2
+                            "CANCEL",// 3
+                            "   RESCHEDULE",// 4
+                            "   RESUME",// 5
+                            "   SUSPEND",// 6
+                            "REQUEST",// 7
+                            "PREEMPT",// 8
+                            "RELEASE",// 9
+                            "   QUEUE",// 10
+                            "   DEQUEUE",// 11
+                            "   RESERVE",// 12
+                            "FACILITY"// 13
+      };
       if (clock>tl)      /* print time stamp (if time has advanced) */
         then {tl=clock; fprintf(opf,"  time %-12.3f  ",clock);}
         else fprintf(opf,"%21s",m[0]);

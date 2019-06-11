@@ -8,4 +8,6 @@ void print_cis(node_set *nodes, int node, int cluster);
 void print_node_state(t_node *nodes, int n, int node);
 void print_node_ts(t_node *nodes, int n, int node);
 
+void log_messages(t_node node, int token);
+
 #endif //VCUBE_LOGGER_H

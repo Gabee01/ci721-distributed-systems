@@ -1,0 +1,125 @@
+
+> TEMPO: 1.000000, node: 0, event: 1 >> > TEST: 
+> TEMPO: 1.000000, node: 1, event: 1 >> > TEST: 
+> TEMPO: 1.000000, node: 2, event: 1 >> > TEST: 
+> TEMPO: 1.000000, node: 3, event: 1 >> > TEST: 
+> TEMPO: 1.000000, node: 4, event: 1 >> > TEST: 
+> TEMPO: 1.000000, node: 5, event: 1 >> > TEST: 
+> TEMPO: 1.000000, node: 6, event: 1 >> > TEST: 
+> TEMPO: 1.000000, node: 7, event: 1 >> > TEST: 
+> TEMPO: 6.000000, node: 0, event: 1 >> > TEST: 
+> TEMPO: 6.000000, node: 1, event: 1 >> > TEST: 
+> TEMPO: 6.000000, node: 2, event: 1 >> > TEST: 
+> TEMPO: 6.000000, node: 3, event: 1 >> > TEST: 
+> TEMPO: 6.000000, node: 4, event: 1 >> > TEST: 
+> TEMPO: 6.000000, node: 5, event: 1 >> > TEST: 
+> TEMPO: 6.000000, node: 6, event: 1 >> > TEST: 
+> TEMPO: 6.000000, node: 7, event: 1 >> > TEST: 
+> TEMPO: 11.000000, node: 0, event: 1 >> > TEST: 
+> TEMPO: 11.000000, node: 1, event: 1 >> > TEST: 
+> TEMPO: 11.000000, node: 2, event: 1 >> > TEST: 
+> TEMPO: 11.000000, node: 3, event: 1 >> > TEST: 
+> TEMPO: 11.000000, node: 4, event: 1 >> > TEST: 
+> TEMPO: 11.000000, node: 5, event: 1 >> > TEST: 
+> TEMPO: 11.000000, node: 6, event: 1 >> > TEST: 
+> TEMPO: 11.000000, node: 7, event: 1 >> > TEST: 
+> TEMPO: 16.000000, node: 0, event: 1 >> > TEST: 
+> TEMPO: 16.000000, node: 1, event: 1 >> > TEST: 
+> TEMPO: 16.000000, node: 2, event: 1 >> > TEST: 
+> TEMPO: 16.000000, node: 3, event: 1 >> > TEST: 
+> TEMPO: 16.000000, node: 4, event: 1 >> > TEST: 
+> TEMPO: 16.000000, node: 5, event: 1 >> > TEST: 
+> TEMPO: 16.000000, node: 6, event: 1 >> > TEST: 
+> TEMPO: 16.000000, node: 7, event: 1 >> > TEST: 
+> TEMPO: 21.000000, node: 0, event: 1 >> > TEST: 
+> TEMPO: 21.000000, node: 1, event: 1 >> > TEST: 
+> TEMPO: 21.000000, node: 2, event: 1 >> > TEST: 
+> TEMPO: 21.000000, node: 3, event: 1 >> > TEST: 
+> TEMPO: 21.000000, node: 4, event: 1 >> > TEST: 
+> TEMPO: 21.000000, node: 5, event: 1 >> > TEST: 
+> TEMPO: 21.000000, node: 6, event: 1 >> > TEST: 
+> TEMPO: 21.000000, node: 7, event: 1 >> > TEST: 
+> TEMPO: 26.000000, node: 0, event: 1 >> > TEST: 
+> TEMPO: 26.000000, node: 1, event: 1 >> > TEST: 
+> TEMPO: 26.000000, node: 2, event: 1 >> > TEST: 
+> TEMPO: 26.000000, node: 3, event: 1 >> > TEST: 
+> TEMPO: 26.000000, node: 4, event: 1 >> > TEST: 
+> TEMPO: 26.000000, node: 5, event: 1 >> > TEST: 
+> TEMPO: 26.000000, node: 6, event: 1 >> > TEST: 
+> TEMPO: 26.000000, node: 7, event: 1 >> > TEST: 
+> TEMPO: 31.000000, node: 0, event: 1 >> > TEST: 
+> TEMPO: 31.000000, node: 1, event: 1 >> > TEST: 
+> TEMPO: 31.000000, node: 2, event: 1 >> > TEST: 
+> TEMPO: 31.000000, node: 3, event: 1 >> > TEST: 
+> TEMPO: 31.000000, node: 4, event: 1 >> > TEST: 
+> TEMPO: 31.000000, node: 5, event: 1 >> > TEST: 
+> TEMPO: 31.000000, node: 6, event: 1 >> > TEST: 
+> TEMPO: 31.000000, node: 7, event: 1 >> > TEST: 
+> TEMPO: 35.000000, node: 0, event: 4 >> > SEND: node 0 sending message(Node 0 says hi!), received from cluster -1651261144, to node 1 (first ok node in s = 1)
+node 1 inbox (1 messages): {(0: Node 0 says hi! - received from cluster = 1),}
+node 0 sending message(Node 0 says hi!), received from cluster 1, to node 2 (first ok node in s = 2)
+node 2 inbox (1 messages): {(0: Node 0 says hi! - received from cluster = 2),}
+node 0 sending message(Node 0 says hi!), received from cluster 2, to node 4 (first ok node in s = 3)
+node 4 inbox (1 messages): {(0: Node 0 says hi! - received from cluster = 3),}
+> RECEIVE: no messages on inbox
+
+> TEMPO: 36.000000, node: 0, event: 1 >> > TEST: 
+> TEMPO: 36.000000, node: 1, event: 1 >> > TEST: 
+> TEMPO: 36.000000, node: 2, event: 1 >> > TEST: 
+> TEMPO: 36.000000, node: 3, event: 1 >> > TEST: 
+> TEMPO: 36.000000, node: 4, event: 1 >> > TEST: 
+> TEMPO: 36.000000, node: 5, event: 1 >> > TEST: 
+> TEMPO: 36.000000, node: 6, event: 1 >> > TEST: 
+> TEMPO: 36.000000, node: 7, event: 1 >> > TEST: 
+> TEMPO: 40.000000, node: 0, event: 5 >> > RECEIVE: no messages on inbox
+
+> TEMPO: 40.000000, node: 1, event: 5 >> > RECEIVE: node 1 delivered message ("Node 0 says hi!") from cluster 1
+node 1 inbox (0 messages): {}
+
+> TEMPO: 40.000000, node: 2, event: 5 >> > RECEIVE: node 2 delivered message ("Node 0 says hi!") from cluster 2
+node 2 inbox (0 messages): {}
+
+> TEMPO: 40.000000, node: 3, event: 5 >> > RECEIVE: no messages on inbox
+
+> TEMPO: 40.000000, node: 4, event: 5 >> > RECEIVE: node 4 delivered message ("Node 0 says hi!") from cluster 3
+node 4 inbox (0 messages): {}
+
+> TEMPO: 40.000000, node: 5, event: 5 >> > RECEIVE: no messages on inbox
+
+> TEMPO: 40.000000, node: 6, event: 5 >> > RECEIVE: no messages on inbox
+
+> TEMPO: 40.000000, node: 7, event: 5 >> > RECEIVE: no messages on inbox
+
+> TEMPO: 41.000000, node: 0, event: 1 >> > TEST: 
+> TEMPO: 41.000000, node: 1, event: 1 >> > TEST: 
+> TEMPO: 41.000000, node: 2, event: 1 >> > TEST: 
+> TEMPO: 41.000000, node: 3, event: 1 >> > TEST: 
+> TEMPO: 41.000000, node: 4, event: 1 >> > TEST: 
+> TEMPO: 41.000000, node: 5, event: 1 >> > TEST: 
+> TEMPO: 41.000000, node: 6, event: 1 >> > TEST: 
+> TEMPO: 41.000000, node: 7, event: 1 >> > TEST: 
+> TEMPO: 46.000000, node: 0, event: 1 >> > TEST: 
+> TEMPO: 46.000000, node: 1, event: 1 >> > TEST: 
+> TEMPO: 46.000000, node: 2, event: 1 >> > TEST: 
+> TEMPO: 46.000000, node: 3, event: 1 >> > TEST: 
+> TEMPO: 46.000000, node: 4, event: 1 >> > TEST: 
+> TEMPO: 46.000000, node: 5, event: 1 >> > TEST: 
+> TEMPO: 46.000000, node: 6, event: 1 >> > TEST: 
+> TEMPO: 46.000000, node: 7, event: 1 >> > TEST: 
+> TEMPO: 51.000000, node: 0, event: 1 >> > TEST: 
+> TEMPO: 51.000000, node: 1, event: 1 >> > TEST: 
+> TEMPO: 51.000000, node: 2, event: 1 >> > TEST: 
+> TEMPO: 51.000000, node: 3, event: 1 >> > TEST: 
+> TEMPO: 51.000000, node: 4, event: 1 >> > TEST: 
+> TEMPO: 51.000000, node: 5, event: 1 >> > TEST: 
+> TEMPO: 51.000000, node: 6, event: 1 >> > TEST: 
+> TEMPO: 51.000000, node: 7, event: 1 >> > TEST: 
+> TEMPO: 56.000000, node: 0, event: 1 >> > TEST: 
+> TEMPO: 56.000000, node: 1, event: 1 >> > TEST: 
+> TEMPO: 56.000000, node: 2, event: 1 >> > TEST: 
+> TEMPO: 56.000000, node: 3, event: 1 >> > TEST: 
+> TEMPO: 56.000000, node: 4, event: 1 >> > TEST: 
+> TEMPO: 56.000000, node: 5, event: 1 >> > TEST: 
+> TEMPO: 56.000000, node: 6, event: 1 >> > TEST: 
+> TEMPO: 56.000000, node: 7, event: 1 >> > TEST: 
+> TEMPO: 61.000000, node: 0, event: 1 >> > TEST: 

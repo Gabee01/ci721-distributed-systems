@@ -25,7 +25,7 @@ int main(int argc, char * argv[]){
         switch(event) {
             case TEST: 	
             	if(status(nodes[token].id) == 0){
-            		testNode(token, nodes, n); 	
+            		testNode(token, nodes, n, SHOULD_LOG);
             		schedule(TEST, roundTime, token);
             	}
             	// printf("status node %d = %d", token, status(token));
